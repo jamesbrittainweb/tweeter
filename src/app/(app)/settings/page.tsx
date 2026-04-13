@@ -8,21 +8,13 @@ export default async function SettingsPage() {
   const me = await ensureMyProfile();
 
   return (
-    <div className="space-y-6">
-      <header className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
-          <p className="mt-1 text-sm text-muted">
-            Update your profile and handle.
-          </p>
-        </div>
-        <SignOutButton />
+    <div>
+      <header className="border-b border-border px-4 py-3">
+        <div className="text-lg font-extrabold">Settings</div>
+        <div className="text-xs text-muted">Update your profile and handle.</div>
       </header>
 
-      <form
-        action={updateMyProfile}
-        className="rounded-2xl border border-border bg-card p-5"
-      >
+      <form action={updateMyProfile} className="px-4 py-4">
         <div className="grid gap-4">
           <Field
             label="Handle"
@@ -44,18 +36,19 @@ export default async function SettingsPage() {
             defaultValue={me?.avatar_url ?? ""}
           />
           <div>
-            <label className="text-sm font-semibold">Bio</label>
+            <label className="text-sm font-extrabold">Bio</label>
             <textarea
               name="bio"
               defaultValue={me?.bio ?? ""}
               placeholder="A short bio…"
-              className="mt-2 min-h-24 w-full resize-none rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-foreground/40"
+              className="mt-2 min-h-24 w-full resize-none rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-foreground/25"
             />
           </div>
         </div>
 
-        <div className="mt-5 flex items-center justify-end">
-          <button className="rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white">
+        <div className="mt-6 flex items-center justify-between gap-3">
+          <SignOutButton />
+          <button className="rounded-full bg-foreground px-5 py-2.5 text-sm font-extrabold text-background">
             Save
           </button>
         </div>
@@ -79,12 +72,12 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-sm font-semibold">{label}</label>
+      <label className="text-sm font-extrabold">{label}</label>
       <input
         name={name}
         placeholder={placeholder}
         defaultValue={defaultValue}
-        className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-foreground/40"
+        className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-foreground/25"
       />
       {hint ? <div className="mt-1 text-xs text-muted">{hint}</div> : null}
     </div>

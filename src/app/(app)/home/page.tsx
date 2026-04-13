@@ -1,6 +1,5 @@
-import Link from "next/link";
-
 import { Composer } from "@/components/Composer";
+import { Avatar } from "@/components/Avatar";
 import { LikeButton } from "@/components/LikeButton";
 import { ensureMyProfile, getPostsForFeed, getViewer } from "@/lib/data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -18,67 +17,61 @@ export default async function HomePage() {
   );
 
   return (
-    <div className="space-y-6">
-      <section className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Home</h1>
-          <p className="mt-1 text-sm text-muted">
-            You’re signed in{me ? ` as @${me.handle}` : ""}.
-          </p>
+    <div>
+      <header className="border-b border-border px-4 py-3">
+        <div className="text-lg font-extrabold">Home</div>
+        <div className="text-xs text-muted">
+          {me ? `@${me.handle}` : "Signed in"}
         </div>
-        <Link
-          href="/settings"
-          className="rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold"
-        >
-          Edit profile
-        </Link>
-      </section>
+      </header>
 
       <Composer />
 
-      <section className="space-y-3">
+      <section>
         {posts.length === 0 ? (
-          <div className="rounded-2xl border border-border bg-card p-6 text-sm text-muted">
+          <div className="px-4 py-10 text-sm text-muted">
             No twitts yet. Be the first.
           </div>
         ) : null}
 
-        {posts.map((post) => {
-          const author = post.author;
-          const handle = author?.handle ?? "unknown";
-          const display = author?.display_name ?? `@${handle}`;
-          const liked = likedPostIds.has(post.id);
+        <div className="divide-y divide-border">
+          {posts.map((post) => {
+            const author = post.author;
+            const handle = author?.handle ?? "unknown";
+            const display = author?.display_name ?? handle;
+            const liked = likedPostIds.has(post.id);
 
-          return (
-            <article
-              key={post.id}
-              className="rounded-2xl border border-border bg-card p-4"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <Link
-                    href={`/u/${handle}`}
-                    className="truncate text-sm font-semibold hover:underline"
-                  >
-                    {display}{" "}
-                    <span className="font-normal text-muted">@{handle}</span>
-                  </Link>
-                  <div className="mt-0.5 text-xs text-muted">
-                    {new Date(post.created_at).toLocaleString()}
+            return (
+              <article key={post.id} className="px-4 py-3 hover:bg-border/30">
+                <div className="flex gap-3">
+                  <Avatar
+                    label={display}
+                    className="h-10 w-10 rounded-full bg-border text-sm font-extrabold"
+                  />
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-x-2 text-[13px]">
+                      <span className="font-extrabold">{display}</span>
+                      <span className="text-muted">@{handle}</span>
+                      <span className="text-muted">·</span>
+                      <span className="text-muted">
+                        {new Date(post.created_at).toLocaleString()}
+                      </span>
+                    </div>
+
+                    <p className="mt-1 whitespace-pre-wrap text-[15px] leading-6">
+                      {post.content}
+                    </p>
+
+                    <div className="mt-2 flex items-center gap-5">
+                      <LikeButton postId={post.id} liked={liked} />
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <p className="mt-3 whitespace-pre-wrap text-sm leading-6">
-                {post.content}
-              </p>
-
-              <div className="mt-3 flex items-center gap-4">
-                <LikeButton postId={post.id} liked={liked} />
-              </div>
-            </article>
-          );
-        })}
+              </article>
+            );
+          })}
+        </div>
       </section>
     </div>
   );

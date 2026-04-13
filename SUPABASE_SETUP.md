@@ -7,12 +7,19 @@
   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
   - `anon public` key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-## 2) Apply the database schema + RLS
+## 2) Enable email + password auth
+
+In Supabase:
+- **Authentication → Providers → Email**
+  - Ensure Email auth is enabled
+  - Ensure **password sign-in** is allowed
+
+## 3) Apply the database schema + RLS
 
 - Open **SQL Editor** in Supabase.
 - Paste and run `supabase/migrations/0001_init.sql`.
 
-## 3) Configure auth redirect URLs
+## 4) Configure auth redirect URLs
 
 In Supabase:
 - **Authentication → URL Configuration**

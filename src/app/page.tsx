@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -16,65 +17,55 @@ async function Landing() {
   if (data.user) redirect("/home");
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-3xl flex-col px-6 py-14">
-      <header className="flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight">
-          <Logo className="h-6 w-6 text-brand" />
-          <span className="text-brand">Tweeter</span>
-        </Link>
-        <Link
-          href="/auth"
-          className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
-        >
-          Sign in
-        </Link>
-      </header>
-
-      <section className="mt-16">
-        <h1 className="text-balance text-5xl font-semibold leading-[1.05] tracking-tight">
-          Share quick thoughts.
-        </h1>
-        <p className="mt-5 max-w-xl text-pretty text-lg text-muted">
-          Tweeter is a simple, friendly microblog — built with Next.js and
-          Supabase, deployed on Vercel.
-        </p>
-
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Link
-            href="/auth"
-            className="inline-flex items-center justify-center rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white"
-          >
-            Get started
-          </Link>
-          <a
-            className="inline-flex items-center justify-center rounded-full border border-border bg-background px-5 py-3 text-sm font-semibold"
-            href="https://supabase.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Powered by Supabase
-          </a>
+    <main className="min-h-dvh bg-background">
+      <div className="mx-auto grid min-h-dvh w-full max-w-6xl grid-cols-1 lg:grid-cols-2">
+        <div className="hidden items-center justify-center lg:flex">
+          <div className="flex items-center justify-center rounded-3xl border border-border bg-card p-14">
+            <Logo className="h-40 w-40 text-brand" />
+          </div>
         </div>
-      </section>
 
-      <section className="mt-14 grid gap-4 sm:grid-cols-3">
-        <Feature title="Twitts" body="Short posts with a 280 character cap." />
-        <Feature title="Likes" body="Like posts you enjoy." />
-        <Feature title="Follows" body="Follow people to keep up." />
-      </section>
+        <div className="flex flex-col justify-center px-6 py-10">
+          <header className="flex items-center justify-between">
+            <Link href="/" className="inline-flex items-center gap-2 font-extrabold">
+              <Logo className="h-7 w-7 text-brand" />
+              <span>Tweeter</span>
+            </Link>
+            <ThemeToggle />
+          </header>
 
-      <footer className="mt-auto pt-16 text-sm text-muted">
-        Not Twitter. Just Tweeter.
-      </footer>
+          <h1 className="mt-14 text-balance text-6xl font-extrabold leading-[1.02] tracking-tight">
+            Happening now
+          </h1>
+          <h2 className="mt-6 text-balance text-3xl font-extrabold tracking-tight">
+            Join Tweeter today.
+          </h2>
+
+          <div className="mt-8 flex max-w-sm flex-col gap-3">
+            <Link
+              href="/auth"
+              className="inline-flex items-center justify-center rounded-full bg-brand px-5 py-3 text-sm font-extrabold text-white"
+            >
+              Create account
+            </Link>
+            <Link
+              href="/auth"
+              className="inline-flex items-center justify-center rounded-full border border-border bg-card px-5 py-3 text-sm font-extrabold hover:bg-border"
+            >
+              Sign in
+            </Link>
+          </div>
+
+          <p className="mt-6 max-w-sm text-xs text-muted">
+            By signing up, you agree to keep it friendly. You can switch to dark
+            mode anytime.
+          </p>
+
+          <footer className="mt-14 text-xs text-muted">
+            Built with Next.js + Supabase. Deployed on Vercel.
+          </footer>
+        </div>
+      </div>
     </main>
-  );
-}
-
-function Feature({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <div className="text-sm font-semibold">{title}</div>
-      <div className="mt-1 text-sm text-muted">{body}</div>
-    </div>
   );
 }
