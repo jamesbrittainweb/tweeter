@@ -14,12 +14,20 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "error" | "check_email"
+  >("idle");
   const [error, setError] = useState<string | null>(null);
+  const [resendStatus, setResendStatus] = useState<
+    "idle" | "loading" | "sent" | "error"
+  >("idle");
+  const [resendError, setResendError] = useState<string | null>(null);
 
   async function handleSubmit() {
     setStatus("loading");
     setError(null);
+    setResendStatus("idle");
+    setResendError(null);
 
     let supabase: ReturnType<typeof createSupabaseBrowserClient>;
     try {
@@ -30,10 +38,29 @@ export default function AuthPage() {
       return;
     }
 
-    const { error } =
-      mode === "signin"
-        ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signUp({ email, password });
+    if (mode === "signin") {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError(error.message);
+        setStatus("error");
+        return;
+      }
+
+      window.location.href = "/home";
+      return;
+    }
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/auth/verified`,
+      },
+    });
 
     if (error) {
       setError(error.message);
@@ -41,7 +68,40 @@ export default function AuthPage() {
       return;
     }
 
-    window.location.href = "/home";
+    setPassword("");
+    setStatus("check_email");
+  }
+
+  async function resendVerification() {
+    setResendStatus("loading");
+    setResendError(null);
+
+    let supabase: ReturnType<typeof createSupabaseBrowserClient>;
+    try {
+      supabase = createSupabaseBrowserClient();
+    } catch (e) {
+      setResendError(
+        e instanceof Error ? e.message : "Supabase is not configured.",
+      );
+      setResendStatus("error");
+      return;
+    }
+
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/auth/verified`,
+      },
+    });
+
+    if (error) {
+      setResendError(error.message);
+      setResendStatus("error");
+      return;
+    }
+
+    setResendStatus("sent");
   }
 
   return (
@@ -121,20 +181,68 @@ export default function AuthPage() {
 
             <button
               onClick={handleSubmit}
-              disabled={!email || !password || status === "loading"}
+              disabled={
+                !email ||
+                !password ||
+                status === "loading" ||
+                status === "check_email"
+              }
               className="mt-5 w-full rounded-xl bg-foreground px-3 py-2 text-sm font-extrabold text-background disabled:cursor-not-allowed disabled:opacity-60"
             >
               {status === "loading"
                 ? "Working…"
-                : mode === "signin"
-                  ? "Sign in"
-                  : "Create account"}
+                : status === "check_email"
+                  ? "Check your email"
+                  : mode === "signin"
+                    ? "Sign in"
+                    : "Create account"}
             </button>
 
+            {status === "check_email" ? (
+              <div className="mt-4 rounded-xl border border-border bg-background p-3 text-sm">
+                <div className="font-extrabold">Verify your email</div>
+                <div className="mt-1 text-muted">
+                  We sent a verification email to{" "}
+                  <span className="font-semibold text-foreground">{email}</span>.
+                  Open it to finish signing up.
+                </div>
+              </div>
+            ) : null}
+
             {error ? (
-              <p className="mt-4 text-sm text-red-600" role="alert">
-                {error}
-              </p>
+              <div className="mt-4 space-y-2">
+                <p className="text-sm text-red-600" role="alert">
+                  {error}
+                </p>
+
+                {mode === "signin" &&
+                /confirm|confirmed|verify|verification/i.test(error) ? (
+                  <div className="rounded-xl border border-border bg-background p-3 text-sm">
+                    <div className="font-extrabold">Need a new link?</div>
+                    <div className="mt-1 text-muted">
+                      Resend the verification email to finish setting up your
+                      account.
+                    </div>
+                    <div className="mt-3 flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={resendVerification}
+                        disabled={!email || resendStatus === "loading"}
+                        className="rounded-full border border-border bg-card px-4 py-2 text-sm font-extrabold hover:bg-border disabled:opacity-60"
+                      >
+                        {resendStatus === "loading"
+                          ? "Sending…"
+                          : resendStatus === "sent"
+                            ? "Sent"
+                            : "Resend email"}
+                      </button>
+                      {resendError ? (
+                        <span className="text-sm text-red-600">{resendError}</span>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
             ) : null}
 
             <p className="mt-5 text-xs text-muted">

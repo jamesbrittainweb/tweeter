@@ -8,6 +8,7 @@ export async function GET(request: Request) {
   const { url, anonKey } = getSupabaseConfig();
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
+  const next = requestUrl.searchParams.get("next") || "/home";
 
   if (!code) {
     return NextResponse.redirect(new URL("/auth", requestUrl.origin));
@@ -34,5 +35,5 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/auth", requestUrl.origin));
   }
 
-  return NextResponse.redirect(new URL("/home", requestUrl.origin));
+  return NextResponse.redirect(new URL(next, requestUrl.origin));
 }
