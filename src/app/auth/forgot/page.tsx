@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { Logo } from "@/components/Logo";
@@ -15,8 +15,18 @@ export default function ForgotPasswordPage() {
     "idle",
   );
   const [error, setError] = useState<string | null>(null);
+  const [cooldownMsLeft, setCooldownMsLeft] = useState(0);
+
+  useEffect(() => {
+    if (cooldownMsLeft <= 0) return;
+    const interval = window.setInterval(() => {
+      setCooldownMsLeft((ms) => Math.max(0, ms - 200));
+    }, 200);
+    return () => window.clearInterval(interval);
+  }, [cooldownMsLeft]);
 
   async function sendReset() {
+    if (cooldownMsLeft > 0) return;
     setStatus("loading");
     setError(null);
 
@@ -35,11 +45,17 @@ export default function ForgotPasswordPage() {
     });
 
     if (error) {
-      setError(error.message);
+      if (/after\s+2\s+seconds/i.test(error.message)) {
+        setCooldownMsLeft(2200);
+        setError("Please wait a moment and try again.");
+      } else {
+        setError(error.message);
+      }
       setStatus("error");
       return;
     }
 
+    setCooldownMsLeft(2200);
     setStatus("sent");
   }
 
@@ -75,10 +91,14 @@ export default function ForgotPasswordPage() {
           <button
             type="button"
             onClick={sendReset}
-            disabled={!email || status === "loading"}
+            disabled={!email || status === "loading" || cooldownMsLeft > 0}
             className="mt-5 w-full rounded-xl bg-foreground px-3 py-2 text-sm font-extrabold text-background disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {status === "loading" ? "Sending…" : "Send reset link"}
+            {status === "loading"
+              ? "Sending…"
+              : cooldownMsLeft > 0
+                ? `Try again in ${Math.ceil(cooldownMsLeft / 1000)}s`
+                : "Send reset link"}
           </button>
 
           {status === "sent" ? (
@@ -109,4 +129,3 @@ export default function ForgotPasswordPage() {
     </main>
   );
 }
-
