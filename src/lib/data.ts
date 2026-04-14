@@ -6,6 +6,7 @@ export type Profile = {
   display_name: string | null;
   bio: string | null;
   avatar_url: string | null;
+  verified: boolean;
 };
 
 export type Post = {
@@ -29,7 +30,7 @@ export async function ensureMyProfile() {
 
   const profile = await supabase
     .from("profiles")
-    .select("id, handle, display_name, bio, avatar_url")
+    .select("id, handle, display_name, bio, avatar_url, verified")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -43,7 +44,7 @@ export async function ensureMyProfile() {
 
   const created = await supabase
     .from("profiles")
-    .select("id, handle, display_name, bio, avatar_url")
+    .select("id, handle, display_name, bio, avatar_url, verified")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -54,7 +55,7 @@ export async function getProfileByHandle(handle: string) {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, handle, display_name, bio, avatar_url")
+    .select("id, handle, display_name, bio, avatar_url, verified")
     .eq("handle", handle)
     .maybeSingle();
   if (error) throw new Error(error.message);
@@ -75,13 +76,13 @@ export async function getPostsForFeed(limit = 50) {
 
   type AuthorProfile = Pick<
     Profile,
-    "id" | "handle" | "display_name" | "avatar_url"
+    "id" | "handle" | "display_name" | "avatar_url" | "verified"
   >;
 
   const profilesRes: { data: AuthorProfile[] | null } = authorIds.length
     ? await supabase
         .from("profiles")
-        .select("id, handle, display_name, avatar_url")
+        .select("id, handle, display_name, avatar_url, verified")
         .in("id", authorIds)
     : { data: [] };
 

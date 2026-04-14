@@ -19,9 +19,13 @@ create table if not exists public.profiles (
   display_name text,
   bio text,
   avatar_url text,
+  verified boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- If you created `profiles` before adding `verified`, keep it compatible:
+alter table public.profiles add column if not exists verified boolean not null default false;
 
 drop trigger if exists set_profiles_updated_at on public.profiles;
 create trigger set_profiles_updated_at

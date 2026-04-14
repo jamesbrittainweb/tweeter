@@ -5,6 +5,7 @@ import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SignOutButton } from "@/components/SignOutButton";
 import { ensureMyProfile } from "@/lib/data";
+import { getAdminEmail } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +18,8 @@ export default async function AppLayout({
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.auth.getUser();
   if (!data.user) redirect("/auth");
+  const isAdmin =
+    (data.user.email || "").toLowerCase() === getAdminEmail().toLowerCase();
 
   const me = await ensureMyProfile();
 
@@ -36,6 +39,7 @@ export default async function AppLayout({
             <NavItem href="/home">Home</NavItem>
             {me ? <NavItem href={`/u/${me.handle}`}>Profile</NavItem> : null}
             <NavItem href="/settings">Settings</NavItem>
+            {isAdmin ? <NavItem href="/admin">Admin</NavItem> : null}
           </nav>
 
           <div className="mt-auto flex flex-col gap-3">

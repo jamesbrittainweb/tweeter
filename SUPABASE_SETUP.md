@@ -17,7 +17,7 @@ In Supabase:
 ## 3) Apply the database schema + RLS
 
 - Open **SQL Editor** in Supabase.
-- Paste and run `supabase/migrations/0001_init.sql`.
+- Paste and run `migrations/0001_init.sql`.
 
 ## 4) Configure auth redirect URLs
 
@@ -28,3 +28,11 @@ In Supabase:
   - After deploying on Vercel, add:
     - `https://YOUR_DOMAIN/auth/callback?next=/auth/verified`
     - `https://YOUR_DOMAIN/auth/callback?next=/auth/reset`
+
+## 5) (Optional) Admin page
+
+To use `/admin` for verified checkmarks:
+
+- Add these env vars in Vercel (Project → Settings → Environment Variables):
+  - `SUPABASE_SERVICE_ROLE_KEY` (keep secret; server-only)
+  - `SUPABASE_ADMIN_EMAIL` (default is `jamesbrittainweb@gmail.com`)

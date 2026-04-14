@@ -56,7 +56,7 @@ export function AuthClient() {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -67,6 +67,13 @@ export function AuthClient() {
     if (error) {
       setError(error.message);
       setStatus("error");
+      return;
+    }
+
+    // If email confirmation is disabled in Supabase, signUp returns a session
+    // immediately (no verification email will be sent).
+    if (data.session) {
+      window.location.href = "/home";
       return;
     }
 
@@ -221,6 +228,10 @@ export function AuthClient() {
                   We sent a verification email to{" "}
                   <span className="font-semibold text-foreground">{email}</span>.
                   Open it to finish signing up.
+                </div>
+                <div className="mt-2 text-xs text-muted">
+                  If you don’t get an email, double-check Supabase has “Confirm
+                  email” enabled for the Email provider.
                 </div>
                 <div className="mt-3 flex items-center gap-3">
                   <button

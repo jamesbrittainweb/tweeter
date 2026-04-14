@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { updateSupabaseSession } from "@/lib/supabase/middleware";
 
-const PROTECTED_PREFIXES = ["/home", "/settings", "/u"];
+const PROTECTED_PREFIXES = ["/home", "/settings", "/u", "/admin"];
+const ADMIN_EMAIL = (process.env.SUPABASE_ADMIN_EMAIL ||
+  "jamesbrittainweb@gmail.com") as string;
 
 export async function middleware(request: NextRequest) {
   const { supabase, response } = updateSupabaseSession(request);
@@ -25,6 +27,15 @@ export async function middleware(request: NextRequest) {
       redirectResponse.cookies.set(cookie);
     }
     return redirectResponse;
+  }
+
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    const email = (user.email || "").toLowerCase();
+    if (email !== ADMIN_EMAIL.toLowerCase()) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/home";
+      return NextResponse.redirect(url);
+    }
   }
 
   return response;

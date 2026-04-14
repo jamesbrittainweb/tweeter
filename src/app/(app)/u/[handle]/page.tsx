@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { Avatar } from "@/components/Avatar";
 import { FollowButton } from "@/components/FollowButton";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import {
   ensureMyProfile,
   getIsFollowing,
@@ -41,8 +42,9 @@ export default async function UserPage({
               className="h-14 w-14 rounded-full bg-border text-lg font-extrabold"
             />
             <div>
-              <h1 className="text-xl font-extrabold leading-tight">
+              <h1 className="inline-flex items-center gap-1 text-xl font-extrabold leading-tight">
                 {profile.display_name || profile.handle}
+                {profile.verified ? <VerifiedBadge /> : null}
               </h1>
               <div className="text-sm text-muted">@{profile.handle}</div>
               {profile.bio ? (

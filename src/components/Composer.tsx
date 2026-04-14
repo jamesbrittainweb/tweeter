@@ -5,7 +5,11 @@ import { useState, useTransition } from "react";
 import { Avatar } from "@/components/Avatar";
 import { createPost } from "@/lib/actions";
 
-export function Composer() {
+export function Composer({
+  profile,
+}: {
+  profile?: { handle: string; display_name: string | null; avatar_url: string | null } | null;
+}) {
   const [content, setContent] = useState("");
   const [isPending, startTransition] = useTransition();
   const remaining = 280 - content.length;
@@ -13,7 +17,11 @@ export function Composer() {
   return (
     <div className="border-b border-border px-4 py-3">
       <div className="flex items-start gap-3">
-        <Avatar label="You" className="h-10 w-10 rounded-full bg-border" />
+        <Avatar
+          label={profile?.display_name || profile?.handle || "You"}
+          src={profile?.avatar_url ?? null}
+          className="h-10 w-10 rounded-full bg-border"
+        />
         <div className="flex-1">
           <textarea
             value={content}

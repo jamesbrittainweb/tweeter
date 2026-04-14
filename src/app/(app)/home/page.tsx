@@ -1,6 +1,7 @@
 import { Composer } from "@/components/Composer";
 import { Avatar } from "@/components/Avatar";
 import { LikeButton } from "@/components/LikeButton";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { ensureMyProfile, getPostsForFeed, getViewer } from "@/lib/data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -25,7 +26,7 @@ export default async function HomePage() {
         </div>
       </header>
 
-      <Composer />
+      <Composer profile={me} />
 
       <section>
         {posts.length === 0 ? (
@@ -46,12 +47,16 @@ export default async function HomePage() {
                 <div className="flex gap-3">
                   <Avatar
                     label={display}
+                    src={author?.avatar_url ?? null}
                     className="h-10 w-10 rounded-full bg-border text-sm font-extrabold"
                   />
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-x-2 text-[13px]">
-                      <span className="font-extrabold">{display}</span>
+                      <span className="inline-flex items-center gap-1 font-extrabold">
+                        {display}
+                        {author?.verified ? <VerifiedBadge /> : null}
+                      </span>
                       <span className="text-muted">@{handle}</span>
                       <span className="text-muted">·</span>
                       <span className="text-muted">
