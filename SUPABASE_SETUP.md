@@ -17,7 +17,7 @@ In Supabase:
 ## 3) Apply the database schema + RLS
 
 - Open **SQL Editor** in Supabase.
-- Paste and run `migrations/0001_init.sql`.
+- Paste and run `migrations/0002_schema.sql`.
 
 ## 4) Configure auth redirect URLs
 
