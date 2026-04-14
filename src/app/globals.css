@@ -3,12 +3,14 @@
 :root {
   color-scheme: light;
 
+  --page: #e6ecf0;
   --background: #ffffff;
   --foreground: #0f1419;
   --card: #ffffff;
-  --muted: #536471;
-  --border: #eff3f4;
-  --brand: #1d9bf0;
+  --panel: #f5f8fa;
+  --muted: #657786;
+  --border: #e6ecf0;
+  --brand: #1da1f2;
 
   --font-sans-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
     Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
@@ -19,9 +21,11 @@
 [data-theme="dark"] {
   color-scheme: dark;
 
+  --page: #000000;
   --background: #000000;
   --foreground: #e7e9ea;
   --card: #000000;
+  --panel: #16181c;
   --muted: #71767b;
   --border: #2f3336;
   --brand: #1d9bf0;
@@ -31,6 +35,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
+  --color-panel: var(--panel);
   --color-muted: var(--muted);
   --color-border: var(--border);
   --color-brand: var(--brand);
@@ -39,7 +44,7 @@
 }
 
 body {
-  background: var(--background);
+  background: var(--page);
   color: var(--foreground);
   font-family: var(--font-sans-family);
 }

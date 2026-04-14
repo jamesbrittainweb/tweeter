@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Composer } from "@/components/Composer";
 import { Avatar } from "@/components/Avatar";
 import { LikeButton } from "@/components/LikeButton";
@@ -41,23 +43,29 @@ export default async function HomePage() {
             const handle = author?.handle ?? "unknown";
             const display = author?.display_name ?? handle;
             const liked = likedPostIds.has(post.id);
+            const profileHref = `/u/${handle}`;
 
             return (
               <article key={post.id} className="px-4 py-3 hover:bg-border/30">
                 <div className="flex gap-3">
-                  <Avatar
-                    label={display}
-                    src={author?.avatar_url ?? null}
-                    className="h-10 w-10 rounded-full bg-border text-sm font-extrabold"
-                  />
+                  <Link href={profileHref} className="shrink-0">
+                    <Avatar
+                      label={display}
+                      src={author?.avatar_url ?? null}
+                      className="h-10 w-10 rounded-full bg-border text-sm font-extrabold"
+                    />
+                  </Link>
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-x-2 text-[13px]">
-                      <span className="inline-flex items-center gap-1 font-extrabold">
+                      <Link
+                        href={profileHref}
+                        className="inline-flex items-center gap-1 font-extrabold hover:underline"
+                      >
                         {display}
                         {author?.verified ? <VerifiedBadge /> : null}
-                      </span>
-                      <span className="text-muted">@{handle}</span>
+                        <span className="font-semibold text-muted">@{handle}</span>
+                      </Link>
                       <span className="text-muted">·</span>
                       <span className="text-muted">
                         {new Date(post.created_at).toLocaleString()}

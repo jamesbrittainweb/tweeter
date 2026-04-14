@@ -121,3 +121,29 @@ export async function getIsFollowing(viewerId: string, profileId: string) {
   if (error && error.code !== "PGRST116") throw new Error(error.message);
   return Boolean(data);
 }
+
+export async function getSuggestedProfiles(options: {
+  excludeUserId?: string;
+  limit?: number;
+}) {
+  const supabase = await createSupabaseServerClient();
+  const limit = options.limit ?? 5;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, handle, display_name, avatar_url, verified")
+    .order("created_at", { ascending: false })
+    .limit(limit + 5);
+
+  if (error) throw new Error(error.message);
+
+  const profiles = (data ?? []) as Array<
+    Pick<Profile, "id" | "handle" | "display_name" | "avatar_url" | "verified">
+  >;
+
+  const filtered = options.excludeUserId
+    ? profiles.filter((p) => p.id !== options.excludeUserId)
+    : profiles;
+
+  return filtered.slice(0, limit);
+}
