@@ -23,5 +23,8 @@ In Supabase:
 
 In Supabase:
 - **Authentication → URL Configuration**
-  - Add Redirect URL: `http://localhost:3000/auth/callback`
-  - After deploying on Vercel, add: `https://YOUR_DOMAIN/auth/callback`
+  - Add Redirect URL (signup verification): `http://localhost:3000/auth/callback?next=/auth/verified`
+  - Add Redirect URL (password reset): `http://localhost:3000/auth/callback?next=/auth/reset`
+  - After deploying on Vercel, add:
+    - `https://YOUR_DOMAIN/auth/callback?next=/auth/verified`
+    - `https://YOUR_DOMAIN/auth/callback?next=/auth/reset`

@@ -203,6 +203,17 @@ export function AuthClient() {
                     : "Create account"}
             </button>
 
+            {mode === "signin" ? (
+              <div className="mt-4 text-sm">
+                <Link
+                  href="/auth/forgot"
+                  className="font-extrabold text-foreground hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            ) : null}
+
             {status === "check_email" ? (
               <div className="mt-4 rounded-xl border border-border bg-background p-3 text-sm">
                 <div className="font-extrabold">Verify your email</div>
@@ -278,4 +289,3 @@ export function AuthClient() {
     </main>
   );
 }
-
