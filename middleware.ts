@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { updateSupabaseSession } from "@/lib/supabase/middleware";
 
-const PROTECTED_PREFIXES = ["/home", "/settings", "/u", "/admin"];
+const PROTECTED_PREFIXES = ["/home", "/settings", "/admin"];
 const ADMIN_EMAIL = (process.env.SUPABASE_ADMIN_EMAIL ||
   "jamesbrittainweb@gmail.com") as string;
 
