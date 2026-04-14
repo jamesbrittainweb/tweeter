@@ -43,13 +43,13 @@ async function Landing() {
 
           <div className="mt-8 flex max-w-sm flex-col gap-3">
             <Link
-              href="/auth"
+              href="/auth?mode=signup"
               className="inline-flex items-center justify-center rounded-full bg-brand px-5 py-3 text-sm font-extrabold text-white"
             >
               Create account
             </Link>
             <Link
-              href="/auth"
+              href="/auth?mode=signin"
               className="inline-flex items-center justify-center rounded-full border border-border bg-card px-5 py-3 text-sm font-extrabold hover:bg-border"
             >
               Sign in
